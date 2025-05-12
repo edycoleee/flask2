@@ -249,8 +249,10 @@ LATIHAN : buat 2 funct untuk decorator, loop, kwarg, arg, dict, list, tuple, ife
 ```git
 git branch 02_gethalo
 git checkout 02_gethalo
-```
 TAMBAHKAN FILE GIT .gitignore
+```
+
+MEMBuAT API SEDERHANA
 
 | No  | Method | Endpoint       | Request Body (JSON)                         | Response (JSON)                             |
 | --- | ------ | -------------- | ------------------------------------------- | ------------------------------------------- |

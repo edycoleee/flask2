@@ -247,9 +247,13 @@ LATIHAN : buat 2 funct untuk decorator, loop, kwarg, arg, dict, list, tuple, ife
 #### branch 02_gethalo
 
 ```git
-git branch 02_gethalo
-git checkout 02_gethalo
+git branch 02_gethalo         # Membuat branch baru
+git checkout 02_gethalo       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
 TAMBAHKAN FILE GIT .gitignore
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 02_gethalo # Push ke remote dan set tracking branch
 ```
 
 MEMBuAT API SEDERHANA
@@ -282,7 +286,7 @@ source venv/bin/activate  #Linux / Macbook
 venv\Scripts\activate # Windows
 
 #2. Install Flask
-pip install flask pytest flask_cors
+pip install flask pytest flask_cors flasgger
 
 #3. app.py
 # import >> create object >> route >> funtion return response >> run
@@ -341,6 +345,14 @@ pytest
 ```git
 git branch 03_cleanhalo
 git checkout 03_cleanhalo
+git push -u origin 03_cleanhalo
+
+git branch 03_cleanhalo         # Membuat branch baru
+git checkout 03_cleanhalo       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 03_cleanhalo # Push ke remote dan set tracking branch
 ```
 
 LANGKAH : app.py >> routes >> docs >> test_app.py >> TEST
@@ -352,12 +364,13 @@ project-folder/
 ├── routes/
 │   └── belajar.py
 ├── docs/
-│   └── halo.yml
+│   └── gethalo.yml
 └── test/
     ├──__init__.py
     └── test_belajar.py
 
 ```
+pada python di wajibkan buat file kosong __init__.py : Tandai folder sebagai package >> Agar bisa di-import sebagai modul
 
 ```py
 # import >> create object >> cors,swagger >> route register >> run
@@ -392,29 +405,13 @@ belajar_bp = Blueprint('belajar_bp', __name__)
 
 # route, method >> swagger doc >> function return response
 @belajar_bp.route('/halo', methods=['GET'])
-@swag_from('../docs/halo.yml')
+@swag_from('../docs/gethalo.yml')
 def get_halo():
     return jsonify({"message": "Belajar Flask"})
 
 #/test/test_belajar.py
-# import >> client >> function test >> assert response
-import pytest
-from app import app  # Import aplikasi Flask dari file app.py
-
-@pytest.fixture
-def client():
-    # Setup Flask test client
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
-
-def test_hallo_endpoint(client):
-    # Kirim request GET ke endpoint /hallo
-    response = client.get('/halo')
-    # Pastikan status kode adalah 200
-    assert response.status_code == 200
-    # Pastikan respon JSON sesuai
-    assert response.get_json() == {"message": "Belajar Flask"}
+# pindahkan test_app.py >> test_belajar.py
+# jangan lupa membuat __init__.py (file kosong)
 ```
 
 ```yml
@@ -431,8 +428,9 @@ responses:
       properties:
         message: #key object
           type: string #tipe value object
-          example: Halo Flask #contoh value object
+          example: Belajar Flask #contoh value object
 ```
+Lihat documentation `http://127.0.0.1:5000/apidocs/`
 
 ### 3. API SEDERHANA LANJUTAN
 

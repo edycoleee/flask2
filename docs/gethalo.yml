@@ -1,0 +1,12 @@
+---
+tags: #Judul
+  - Halo
+responses:
+  200: #Respon status
+    description: Respon sukses #Deskripsi status
+    schema:
+      type: object #Tipe data response body
+      properties:
+        message: #key object
+          type: string #tipe value object
+          example: Belajar Flask #contoh value object

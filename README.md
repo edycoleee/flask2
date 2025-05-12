@@ -412,6 +412,7 @@ import os
 belajar_bp = Blueprint('belajar_bp', __name__)
 
 # route, method >> swagger doc >> function return response
+#### GET, /halo, request:-, response:{ "message": "Belajar Flask" }
 @belajar_bp.route('/halo', methods=['GET'])
 @swag_from('../docs/gethalo.yml')
 def get_halo():

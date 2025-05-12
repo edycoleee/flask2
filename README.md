@@ -1,6 +1,6 @@
 ## BELAJAR FLASK MAHIR
 
-**Push ke Github**
+**Push ke Github Pertama Kali**
 
 ```cmd
 git init
@@ -11,7 +11,7 @@ git remote add origin https://github.com/edycoleee/flask2.git
 git push -u origin 01_python
 ```
 
-MATERI
+**_MATERI YANG DIPELAJARI_**
 
 | Branch            | Keterangan                            |
 | ----------------- | ------------------------------------- |
@@ -259,7 +259,7 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 02_gethalo # Push ke remote dan set tracking branch
 ```
 
-MEMBUAT API SEDERHANA
+**MEMBUAT API SEDERHANA**
 
 | No  | Method | Endpoint       | Request Body (JSON)                         | Response (JSON)                             |
 | --- | ------ | -------------- | ------------------------------------------- | ------------------------------------------- |
@@ -267,7 +267,9 @@ MEMBUAT API SEDERHANA
 | 2   | GET    | `/nama/<nama>` | (tidak ada)                                 | `{ "message": "Halo silmi" }`               |
 | 3   | POST   | `/halo`        | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "nama": "Silmi", "alamat": "Semarang" }` |
 
-LANGKAH : ENVIRONTMENT >> app.py >> test_app.py >> TEST
+- GET HALO
+
+**_LANGKAH : ENVIRONTMENT >> app.py >> test_app.py >> TEST_**
 
 app.py : import >> create object >> route(url,method) >> funtion return response >> run(python app.py)
 
@@ -358,7 +360,7 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 03_cleanhalo # Push ke remote dan set tracking branch
 ```
 
-LANGKAH : docs >> routes >> app.py >> test_app.py >> TEST
+**_LANGKAH : docs >> routes >> app.py >> test_app.py >> TEST_**
 
 ```
 project-folder/

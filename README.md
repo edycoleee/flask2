@@ -332,6 +332,7 @@ def client():
     with app.test_client() as client:
         yield client
 
+#### GET, /halo, request:-, response:{ "message": "Belajar Flask" }
 def test_hallo_endpoint(client):
     # Kirim request GET ke endpoint /hallo
     response = client.get('/halo')

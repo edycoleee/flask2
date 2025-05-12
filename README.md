@@ -355,7 +355,7 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 03_cleanhalo # Push ke remote dan set tracking branch
 ```
 
-LANGKAH : app.py >> routes >> docs >> test_app.py >> TEST
+LANGKAH : docs >> routes >> app.py >> test_app.py >> TEST
 
 ```
 project-folder/
@@ -371,6 +371,43 @@ project-folder/
 
 ```
 pada python di wajibkan buat file kosong __init__.py : Tandai folder sebagai package >> Agar bisa di-import sebagai modul
+
+```yml
+# Dokumentasi >> tag >> response >> 
+# {"message": "Belajar Flask"}
+# schema : object >> properties : { key : value(tipe,example) }
+# halo.yml
+---
+tags: #Judul
+  - Halo
+responses:
+  200: #Respon status
+    description: Respon sukses #Deskripsi status
+    schema:
+      type: object #Tipe data response body
+      properties:
+        message: #key object
+          type: string #tipe value object
+          example: Belajar Flask #contoh value object
+```
+
+```py
+# import >> blouprint >> route >> swagg >> funct resposes
+#/routes/belajar.py
+from flask import Blueprint, jsonify
+from flasgger import swag_from
+import os
+
+#'belajar_bp' (param 1)	Nama unik blueprint
+# __name__ (param 2)	Nama modul Python → bantu Flask resolve file
+belajar_bp = Blueprint('belajar_bp', __name__)
+
+# route, method >> swagger doc >> function return response
+@belajar_bp.route('/halo', methods=['GET'])
+@swag_from('../docs/gethalo.yml')
+def get_halo():
+    return jsonify({"message": "Belajar Flask"})
+```
 
 ```py
 # import >> create object >> cors,swagger >> route register >> run
@@ -394,42 +431,12 @@ app.register_blueprint(belajar_bp)
 if __name__ == '__main__':
     app.run(debug=True)
 
-#/routes/belajar.py
-from flask import Blueprint, jsonify
-from flasgger import swag_from
-import os
-
-#'belajar_bp' (param 1)	Nama unik blueprint
-# __name__ (param 2)	Nama modul Python → bantu Flask resolve file
-belajar_bp = Blueprint('belajar_bp', __name__)
-
-# route, method >> swagger doc >> function return response
-@belajar_bp.route('/halo', methods=['GET'])
-@swag_from('../docs/gethalo.yml')
-def get_halo():
-    return jsonify({"message": "Belajar Flask"})
-
 #/test/test_belajar.py
 # pindahkan test_app.py >> test_belajar.py
 # jangan lupa membuat __init__.py (file kosong)
 ```
 
-```yml
-# Dokumentasi >> tag >> response >> schema >> properties >> {}
-# halo.yml
----
-tags: #Judul
-  - Halo
-responses:
-  200: #Respon status
-    description: Respon sukses #Deskripsi status
-    schema:
-      type: object #Tipe data response body
-      properties:
-        message: #key object
-          type: string #tipe value object
-          example: Belajar Flask #contoh value object
-```
+
 Lihat documentation `http://127.0.0.1:5000/apidocs/`
 
 ### 3. API SEDERHANA LANJUTAN
@@ -437,10 +444,6 @@ Lihat documentation `http://127.0.0.1:5000/apidocs/`
 #### branch 04_nama
 
 ```git
-git branch 04_nama
-git checkout 04_nama
-git push -u origin 04_nama
-
 git branch 04_nama         # Membuat branch baru
 git checkout 04_nama       # Berpindah ke branch tersebut
 # (lakukan perubahan pada file sesuai kebutuhan)
@@ -449,29 +452,16 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 04_nama # Push ke remote dan set tracking branch
 ```
 
-LANGKAH : app.py >> test_app.py >> TEST
+LANGKAH : docs >> belajar.py >> test_belajar.py >> TEST
 
 | No  | Method | Endpoint       | Request Body (JSON) | Response (JSON)               |
 | --- | ------ | -------------- | ------------------- | ----------------------------- |
 | 2   | GET    | `/nama/<nama>` | (tidak ada)         | `{ "message": "Halo silmi" }` |
 
-```py
-# tambahkan #/routes/belajar.py
-# route, method >> swagger doc >> function return response
-@belajar_bp.route('/nama/<nama>', methods=['GET'])
-@swag_from('../docs/nama.yml')
-def halo_nama(nama):
-    return jsonify({"message": f"Halo {nama}"})
-
-# function test >> assert response
-#/test/test_belajar.py
-def test_halo_nama(client):
-    response = client.get('/nama/silmi')
-    assert response.status_code == 200
-    assert response.get_json() == {"message": "Halo silmi"}
-```
-
 ```yml
+# membuat input path, response { "message": "Halo silmi" }
+# path : variable name, string, wajib ada, descp
+# response : schema: object >> properties : { key : value(tipe,example) }
 tags:
   - Belajar API GET POST #Judul
 parameters:
@@ -491,39 +481,45 @@ responses:
           example: Halo silmi
 ```
 
+```py
+# tambahkan #/routes/belajar.py
+# route, method >> swagger doc >> function return response
+@belajar_bp.route('/nama/<nama>', methods=['GET'])
+@swag_from('../docs/nama.yml')
+def halo_nama(nama):
+    return jsonify({"message": f"Halo {nama}"})
+
+# function test >> assert response
+#/test/test_belajar.py
+def test_halo_nama(client):
+    response = client.get('/nama/silmi')
+    assert response.status_code == 200
+    assert response.get_json() == {"message": "Halo silmi"}
+```
+
+
 #### branch 05_posthalo
 
-LANGKAH : app.py >> test_app.py >> TEST
+```git
+git branch 05_posthalo         # Membuat branch baru
+git checkout 05_posthalo       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 05_posthalo # Push ke remote dan set tracking branch
+```
+
+LANGKAH : docs >> belajar.py >> test_belajar.py >> TEST
 
 | No  | Method | Endpoint | Request Body (JSON)                         | Response (JSON)                             |
 | --- | ------ | -------- | ------------------------------------------- | ------------------------------------------- |
 | 3   | POST   | `/halo`  | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "nama": "Silmi", "alamat": "Semarang" }` |
 
-```py
-# tambahkan #/routes/belajar.py
-# route, method >> swagger doc >> function >> get request data >> return response
-@belajar_bp.route('/halo', methods=['POST'])
-@swag_from('../docs/halo_post.yml')
-def halo_post():
-    from flask import request
-    data = request.get_json()
-    return jsonify({
-        "nama": data.get("nama"),
-        "alamat": data.get("alamat")
-    })
-
-#tambahkan #/test/test_belajar.py
-# function test >> payload ke body >> assert response
-def test_post_halo(client):
-    payload = {"nama": "Silmi", "alamat": "Semarang"}
-    response = client.post('/halo', json=payload)
-    assert response.status_code == 200
-    assert response.get_json() == payload
-```
-
 ```yml
----
 # Dokumentasi >> tag >> response >> schema >> properties >> {}
+# input : body, wajib ada, schema: object >> properties : { key : value(tipe,example) }
+# response : schema: object >> properties : { key : value(tipe,example) }
+---
 tags:
   - Belajar API GET POST
 parameters:
@@ -554,9 +550,42 @@ responses:
           type: string
 ```
 
+```py
+# tambahkan #/routes/belajar.py
+# route, method >> swagger doc >> function >> get request data >> return response
+@belajar_bp.route('/halo', methods=['POST'])
+@swag_from('../docs/halo_post.yml')
+def halo_post():
+    from flask import request
+    data = request.get_json()
+    return jsonify({
+        "nama": data.get("nama"),
+        "alamat": data.get("alamat")
+    })
+
+#tambahkan #/test/test_belajar.py
+# function test >> payload ke body >> assert response
+def test_post_halo(client):
+    payload = {"nama": "Silmi", "alamat": "Semarang"}
+    response = client.post('/halo', json=payload)
+    assert response.status_code == 200
+    assert response.get_json() == payload
+```
+
+
+
 ### 3. CRUD API
 
 #### branch 06_readall
+
+```git
+git branch 06_readall         # Membuat branch baru
+git checkout 06_readall       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 06_readall # Push ke remote dan set tracking branch
+```
 
 | No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                               |
 | --- | ------ | ------------- | -------------------------------------------------- | ------------------------------------------------------------- |
@@ -587,6 +616,8 @@ project-folder/
 │ ├── test_siswa.py
 │ └── test_belajar.py
 └── siswa.db ← File SQLite (otomatis dibuat)
+
+- CREATE DATABASE
 
 ```py
 # # # app.py
@@ -640,44 +671,10 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 
 - READ ALL
 
-```py
-#routes/siswa.py
-#route, method >> swagger doc >> function (SQL return response)
-from flask import Blueprint, request, jsonify
-from flasgger.utils import swag_from
-import sqlite3
-
-siswa_bp = Blueprint('siswa', __name__)
-
-@siswa_bp.route('/siswa', methods=['GET'])
-@swag_from('../docs/siswa_read_all.yml')
-def get_all_siswa():
-    with sqlite3.connect('siswa.db') as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM tb_siswa")
-        rows = cursor.fetchall()
-    result = [{"id": row[0], "nama": row[1], "alamat": row[2]} for row in rows]
-    return jsonify(result)
-
-#/test/test_siswa.py
-# client >> function test >> get(url) >> assert response
-import pytest
-from app import app
-
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
-
-def test_get_all_siswa(client):
-    response = client.get('/siswa')
-    assert response.status_code == 200
-    assert isinstance(response.get_json(), list)
-```
-
+LANGKAH : docs >> route siswa >> test siswa
 ```yml
 #/docs/siswa_read_all >> response array object >> [{}]
+# schema : array >> items :object >> properties {key, value(tipe)}
 ---
 tags:
   - Siswa
@@ -697,9 +694,63 @@ responses:
             type: string
 ```
 
+```py
+#routes/siswa.py
+#route, method >> swagger doc >> function (SQL return response)
+from flask import Blueprint, request, jsonify
+from flasgger.utils import swag_from
+import sqlite3
+
+siswa_bp = Blueprint('siswa', __name__)
+
+@siswa_bp.route('/siswa', methods=['GET'])
+@swag_from('../docs/siswa_read_all.yml')
+def get_all_siswa():
+    #1. connection
+    with sqlite3.connect('siswa.db') as conn:
+        # 2. cursor >> seperti object koneksi 
+        cursor = conn.cursor()
+        # 3. excecute SQL
+        cursor.execute("SELECT * FROM tb_siswa")
+        # 4. rows >> festchall >> array object [{}]
+        rows = cursor.fetchall()
+    # result di bentuk seperti json format
+    result = [{"id": row[0], "nama": row[1], "alamat": row[2]} for row in rows]
+    return jsonify(result)
+
+#/test/test_siswa.py
+# client >> function test >> get(url) >> assert response
+import pytest
+from app import app
+
+# membuat object client
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        yield client
+
+def test_get_all_siswa(client):
+    # method (url)
+    response = client.get('/siswa')
+    # assert >> code success >> 200
+    assert response.status_code == 200
+    # assert >> berupa json >> list
+    assert isinstance(response.get_json(), list)
+```
+
 - READ ALL WITH SERVICES
 
 #### branch 07_readallclean
+
+```git
+git branch 07_readallclean         # Membuat branch baru
+git checkout 07_readallclean       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 07_readallclean # Push ke remote dan set tracking branch
+```
 
 ```py
 #services/siswa_service.py

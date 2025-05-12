@@ -436,6 +436,19 @@ Lihat documentation `http://127.0.0.1:5000/apidocs/`
 
 #### branch 04_nama
 
+```git
+git branch 04_nama
+git checkout 04_nama
+git push -u origin 04_nama
+
+git branch 04_nama         # Membuat branch baru
+git checkout 04_nama       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 04_nama # Push ke remote dan set tracking branch
+```
+
 LANGKAH : app.py >> test_app.py >> TEST
 
 | No  | Method | Endpoint       | Request Body (JSON) | Response (JSON)               |

@@ -338,6 +338,11 @@ pytest
 
 #### branch 03_cleanhalo
 
+```git
+git branch 03_cleanhalo
+git checkout 03_cleanhalo
+```
+
 LANGKAH : app.py >> routes >> docs >> test_app.py >> TEST
 
 ```

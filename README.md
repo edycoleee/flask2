@@ -300,6 +300,7 @@ from flask import Flask, jsonify
 #b. create object app
 app = Flask(__name__)
 #c. create route, method
+#### GET, /halo, request:-, response:{ "message": "Belajar Flask" }
 @app.route('/halo', methods=['GET'])
 #d. create fungction with return as response
 def halo():
@@ -379,9 +380,10 @@ project-folder/
 pada python di wajibkan buat file kosong **init**.py : Tandai folder sebagai package >> Agar bisa di-import sebagai modul
 
 ```yml
-# Dokumentasi >> tag >> response >>
-# {"message": "Belajar Flask"}
+# Dokumentasi (tag, input, response)
+#### tag: Halo, input: -, response: {"message": "Belajar Flask"}
 # schema : object >> properties : { key : value(tipe,example) }
+
 # halo.yml
 ---
 tags: #Judul

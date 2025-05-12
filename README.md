@@ -1,5 +1,7 @@
 ## BELAJAR FLASK MAHIR
 
+<span style="color:yellow">Push ke Github</span>
+
 ```cmd
 git init
 git add .
@@ -85,15 +87,15 @@ Halo!
 ```js
 // Jika menggunakan js seperti ini
 function myDecorator(func) {
-    return function () {
-        console.log("Sebelum fungsi dijalankan");
-        func();
-        console.log("Setelah fungsi dijalankan");
-    };
+  return function () {
+    console.log("Sebelum fungsi dijalankan");
+    func();
+    console.log("Setelah fungsi dijalankan");
+  };
 }
 
 function sayHello() {
-    console.log("Halo dunia");
+  console.log("Halo dunia");
 }
 
 // Bungkus fungsi menggunakan decorator
@@ -103,25 +105,25 @@ const decoratedSayHello = myDecorator(sayHello);
 decoratedSayHello();
 
 function repeat(n) {
-    return function (func) {
-        return function (...args) {
-            for (let i = 0; i < n; i++) {
-                func(...args);
-            }
-        };
+  return function (func) {
+    return function (...args) {
+      for (let i = 0; i < n; i++) {
+        func(...args);
+      }
     };
+  };
 }
 
 function halo() {
-    console.log("Halo!");
+  console.log("Halo!");
 }
 
 // Bungkus fungsi halo dengan decorator repeat(3)
 const decoratedHalo = repeat(3)(halo);
 
 decoratedHalo();
-
 ```
+
 - ARGS, KWARGS
 
 Python biarkan kamu pakai \_ untuk "placeholder", mirip i pada js for (let i = 0; i < 3; i++) {console.log("Halo")}
@@ -240,6 +242,7 @@ Operasi: Tidak bisa diubah (immutable)
 Coba ubah indeks 0 akan error jika dilakukan
 
 ```
+
 LATIHAN : buat 2 funct untuk decorator, loop, kwarg, arg, dict, list, tuple, ifelse
 
 ### 1. API SEDERHANA
@@ -256,7 +259,7 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 02_gethalo # Push ke remote dan set tracking branch
 ```
 
-MEMBuAT API SEDERHANA
+MEMBUAT API SEDERHANA
 
 | No  | Method | Endpoint       | Request Body (JSON)                         | Response (JSON)                             |
 | --- | ------ | -------------- | ------------------------------------------- | ------------------------------------------- |
@@ -370,10 +373,11 @@ project-folder/
     └── test_belajar.py
 
 ```
-pada python di wajibkan buat file kosong __init__.py : Tandai folder sebagai package >> Agar bisa di-import sebagai modul
+
+pada python di wajibkan buat file kosong **init**.py : Tandai folder sebagai package >> Agar bisa di-import sebagai modul
 
 ```yml
-# Dokumentasi >> tag >> response >> 
+# Dokumentasi >> tag >> response >>
 # {"message": "Belajar Flask"}
 # schema : object >> properties : { key : value(tipe,example) }
 # halo.yml
@@ -436,7 +440,6 @@ if __name__ == '__main__':
 # jangan lupa membuat __init__.py (file kosong)
 ```
 
-
 Lihat documentation `http://127.0.0.1:5000/apidocs/`
 
 ### 3. API SEDERHANA LANJUTAN
@@ -496,7 +499,6 @@ def test_halo_nama(client):
     assert response.status_code == 200
     assert response.get_json() == {"message": "Halo silmi"}
 ```
-
 
 #### branch 05_posthalo
 
@@ -571,8 +573,6 @@ def test_post_halo(client):
     assert response.status_code == 200
     assert response.get_json() == payload
 ```
-
-
 
 ### 3. CRUD API
 
@@ -672,6 +672,7 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 - READ ALL
 
 LANGKAH : docs >> route siswa >> test siswa
+
 ```yml
 #/docs/siswa_read_all >> response array object >> [{}]
 # schema : array >> items :object >> properties {key, value(tipe)}
@@ -708,7 +709,7 @@ siswa_bp = Blueprint('siswa', __name__)
 def get_all_siswa():
     #1. connection
     with sqlite3.connect('siswa.db') as conn:
-        # 2. cursor >> seperti object koneksi 
+        # 2. cursor >> seperti object koneksi
         cursor = conn.cursor()
         # 3. excecute SQL
         cursor.execute("SELECT * FROM tb_siswa")

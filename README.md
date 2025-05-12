@@ -1,6 +1,6 @@
 ## BELAJAR FLASK MAHIR
 
-<span style="color:blue">Push ke Github</span>
+**Push ke Github**
 
 ```cmd
 git init

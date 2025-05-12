@@ -7,9 +7,6 @@ git commit -m "first commit"
 git branch -M 01_python
 git remote add origin https://github.com/edycoleee/flask2.git
 git push -u origin 01_python
-
-git branch 02_gethalo
-git checkout 02_gethalo
 ```
 
 MATERI
@@ -243,10 +240,17 @@ Operasi: Tidak bisa diubah (immutable)
 Coba ubah indeks 0 akan error jika dilakukan
 
 ```
+LATIHAN : buat 2 funct untuk decorator, loop, kwarg, arg, dict, list, tuple, ifelse
 
 ### 1. API SEDERHANA
 
 #### branch 02_gethalo
+
+```git
+git branch 02_gethalo
+git checkout 02_gethalo
+```
+TAMBAHKAN FILE GIT .gitignore
 
 | No  | Method | Endpoint       | Request Body (JSON)                         | Response (JSON)                             |
 | --- | ------ | -------------- | ------------------------------------------- | ------------------------------------------- |

@@ -593,15 +593,19 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 06_readall # Push ke remote dan set tracking branch
 ```
 
-| No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                               |
-| --- | ------ | ------------- | -------------------------------------------------- | ------------------------------------------------------------- |
-| 1   | POST   | `/siswa`      | `{ "nama": "Silmi", "alamat": "Semarang" }`        | `{ "message": "Siswa berhasil ditambahkan" }`                 |
-| 2   | GET    | `/siswa`      | (tidak ada)                                        | `[ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ]` |
-| 3   | GET    | `/siswa/<id>` | (tidak ada)                                        | `{ "id": 1, "nama": "Silmi", "alamat": "Semarang" }`          |
-| 4   | PUT    | `/siswa/<id>` | `{ "nama": "Silmi Updated", "alamat": "Jakarta" }` | `{ "message": "Siswa berhasil diperbarui" }`                  |
-| 5   | DELETE | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Siswa berhasil dihapus" }`                     |
+| No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                                                 |
+| --- | ------ | ------------- | -------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 1   | POST   | `/siswa`      | `{ "nama": "Silmi", "alamat": "Semarang" }`        | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+| 2   | GET    | `/siswa`      | (tidak ada)                                        | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
+| 3   | GET    | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Data siswa ditemukan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+| 4   | PUT    | `/siswa/<id>` | `{ "nama": "Silmi Updated", "alamat": "Jakarta" }` | `{ "message": "Siswa berhasil diperbarui", "data": { "id": 1, "nama": "Silmi Updated", "alamat": "Jakarta" } }` |
+| 5   | DELETE | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Siswa berhasil dihapus", "data": { "id": 1 } }`                  |
 
-LANGKAH : app.py >> routes >> services >> docs >> test_siswa.py >> TEST
+Semua respons sukses mengembalikan message dan data: `{ "message": "", "data": {}}`
+
+Untuk error, respons menggunakan: `{ "error": "Pesan error" }`
+
+LANGKAH : docs >> service >> routes >> app.py >> test_siswa.py >> TEST
 
 project-folder/
 ├── app.py

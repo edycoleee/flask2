@@ -523,6 +523,13 @@ LANGKAH : docs >> belajar.py >> test_belajar.py >> TEST
 | --- | ------ | -------- | ------------------------------------------- | ------------------------------------------- |
 | 3   | POST   | `/halo`  | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "nama": "Silmi", "alamat": "Semarang" }` |
 
+```
+METHOD  : POST `/halo`
+INPUT   : REQ BODY : `{ "nama": "Silmi", "alamat": "Semarang" }`
+PROSES  : -
+OUTPUT  : RES BODY : `{ "nama": "Silmi", "alamat": "Semarang" }`
+```
+
 ```yml
 # Dokumentasi >> tag >> response >> schema >> properties >> {}
 # input : body, wajib ada, schema: object >> properties : { key : value(tipe,example) }
@@ -593,13 +600,13 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 06_readall # Push ke remote dan set tracking branch
 ```
 
-| No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                                                 |
-| --- | ------ | ------------- | -------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 1   | POST   | `/siswa`      | `{ "nama": "Silmi", "alamat": "Semarang" }`        | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+| No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                                                                                       |
+| --- | ------ | ------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 1   | POST   | `/siswa`      | `{ "nama": "Silmi", "alamat": "Semarang" }`        | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }`             |
 | 2   | GET    | `/siswa`      | (tidak ada)                                        | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
-| 3   | GET    | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Data siswa ditemukan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
-| 4   | PUT    | `/siswa/<id>` | `{ "nama": "Silmi Updated", "alamat": "Jakarta" }` | `{ "message": "Siswa berhasil diperbarui", "data": { "id": 1, "nama": "Silmi Updated", "alamat": "Jakarta" } }` |
-| 5   | DELETE | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Siswa berhasil dihapus", "data": { "id": 1 } }`                  |
+| 3   | GET    | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Data siswa ditemukan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }`                   |
+| 4   | PUT    | `/siswa/<id>` | `{ "nama": "Silmi Updated", "alamat": "Jakarta" }` | `{ "message": "Siswa berhasil diperbarui", "data": { "id": 1, "nama": "Silmi Updated", "alamat": "Jakarta" } }`       |
+| 5   | DELETE | `/siswa/<id>` | (tidak ada)                                        | `{ "message": "Siswa berhasil dihapus", "data": { "id": 1 } }`                                                        |
 
 Semua respons sukses mengembalikan message dan data: `{ "message": "", "data": {}}`
 
@@ -661,13 +668,19 @@ PELAJARAN SQL
 | DELETE   | id      | -        | `DELETE FROM tb_siswa WHERE id=?` `(id,)`                                              | -                   |
 | UPDATE   | id      | body     | `UPDATE tb_siswa SET nama=?, alamat=? WHERE id=?` `(data['nama'], data['alamat'], id)` | -                   |
 
-FUNGSI CURSOR SQL LAINNYA
+FUNGSI CURSOR SQL SQLITE LAINNYA
 
-| Fungsi         | Deskripsi Singkat                    | Return Tipe        | Kapan Digunakan                                  |
-| -------------- | ------------------------------------ | ------------------ | ------------------------------------------------ |
-| `fetchall()`   | Mengambil semua baris                | List of tuple/dict | Jika datanya kecil/sedang                        |
-| `fetchone()`   | Mengambil satu baris (per panggilan) | Tuple/dict         | Jika hanya butuh 1 baris atau mau looping manual |
-| `fetchmany(n)` | Mengambil `n` baris                  | List of tuple/dict | Jika ingin baca bertahap (misal data besar)      |
+| Fungsi                  | Deskripsi Singkat                                | Return Tipe                     | Kapan Digunakan                                              |
+| ----------------------- | ------------------------------------------------ | ------------------------------- | ------------------------------------------------------------ |
+| `fetchall()`            | Mengambil semua baris hasil query                | List of tuple/dict              | Jika datanya kecil/sedang dan ingin langsung diproses semua  |
+| `fetchone()`            | Mengambil satu baris (per panggilan)             | Tuple/dict                      | Jika hanya butuh 1 baris atau ingin looping manual satu-satu |
+| `fetchmany(n)`          | Mengambil `n` baris hasil query                  | List of tuple/dict              | Jika ingin baca data besar secara bertahap                   |
+| `lastrowid`             | Mendapatkan ID dari row terakhir yang dimasukkan | Integer                         | Setelah melakukan `INSERT` untuk mendapatkan ID baru         |
+| `rowcount`              | Jumlah baris yang terpengaruh query              | Integer                         | Setelah `UPDATE`/`DELETE` untuk tahu berapa baris yang kena  |
+| `execute(...)`          | Menjalankan satu query SQL                       | None (hasil disimpan di cursor) | Untuk menjalankan perintah SQL                               |
+| `executemany()`         | Menjalankan query berulang dengan banyak data    | None                            | Jika ingin `INSERT` atau `UPDATE` banyak data sekaligus      |
+| `connection.commit()`   | Menyimpan perubahan ke database                  | None                            | Setelah `INSERT`, `UPDATE`, `DELETE`                         |
+| `connection.rollback()` | Membatalkan perubahan transaksi                  | None                            | Jika terjadi error sebelum `commit()`                        |
 
 PERINTAH SQL PADA PYTHON - SQLITE
 
@@ -681,11 +694,20 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 
 - READ ALL
 
+| No  | Method | Endpoint | Request Body (JSON) | Response (JSON)                                                                                                       |
+| --- | ------ | -------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 2   | GET    | `/siswa` | (tidak ada)         | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
+
+| METHOD   | PATH/ID | REQ BODY | QUERY SQL                | CURSOR SQL          |
+| -------- | ------- | -------- | ------------------------ | ------------------- |
+| READ ALL | -       | -        | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |
+
 LANGKAH : docs >> route siswa >> test siswa
 
 ```yml
 #/docs/siswa_read_all >> response array object >> [{}]
 # schema : array >> items :object >> properties {key, value(tipe)}
+---
 ---
 tags:
   - Siswa
@@ -693,16 +715,27 @@ responses:
   200:
     description: Daftar semua siswa
     schema:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          nama:
-            type: string
-          alamat:
-            type: string
+      type: object
+      properties:
+        message:
+          type: string
+          example: Daftar siswa berhasil diambil
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              nama:
+                type: string
+              alamat:
+                type: string
+  500:
+    description: Gagal mengambil data siswa
+    examples:
+      application/json:
+        error: Gagal mengambil data siswa
 ```
 
 ```py
@@ -727,7 +760,10 @@ def get_all_siswa():
         rows = cursor.fetchall()
     # result di bentuk seperti json format
     result = [{"id": row[0], "nama": row[1], "alamat": row[2]} for row in rows]
-    return jsonify(result)
+    return jsonify({
+            "message": "Daftar siswa berhasil diambil",
+            "data": result
+        }), 200
 
 #/test/test_siswa.py
 # client >> function test >> get(url) >> assert response
@@ -746,8 +782,11 @@ def test_get_all_siswa(client):
     response = client.get('/siswa')
     # assert >> code success >> 200
     assert response.status_code == 200
+    json_data = response.get_json()
+
+    assert json_data['message'] == "Daftar siswa berhasil diambil"
     # assert >> berupa json >> list
-    assert isinstance(response.get_json(), list)
+    assert isinstance(json_data['data'], list)
 ```
 
 - READ ALL WITH SERVICES
@@ -795,16 +834,27 @@ siswa_bp = Blueprint('siswa', __name__)
 def read_all_siswa():
     try:
         data = siswa_service.read_all_siswa()
-        return jsonify(data), 200
+        return jsonify({
+            "message": "Daftar siswa berhasil diambil",
+            "data": data
+        }), 200
     except Exception as e:
         print("Error:", e)
-        return jsonify({"error": "Gagal mengambil data"}), 500
+        return jsonify({"error": "Gagal mengambil data siswa"}), 500
 
 ```
 
 - CREATE
 
 #### branch 08_create
+
+| No  | Method | Endpoint | Request Body (JSON)                         | Response (JSON)                                                                                           |
+| --- | ------ | -------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 1   | POST   | `/siswa` | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+
+| METHOD | PATH/ID | REQ BODY | QUERY SQL                                                                            | CURSOR SQL |
+| ------ | ------- | -------- | ------------------------------------------------------------------------------------ | ---------- |
+| CREATE | -       | body     | `INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)` `(data['nama'], data['alamat'])` | -          |
 
 ```py
 #services/siswa_service.py

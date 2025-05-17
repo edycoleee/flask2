@@ -386,7 +386,6 @@ pada python di wajibkan buat file kosong **init**.py : Tandai folder sebagai pac
 # schema : object >> properties : { key : value(tipe,example) }
 
 # halo.yml
----
 tags: #Judul
   - Halo
 responses:
@@ -414,7 +413,7 @@ belajar_bp = Blueprint('belajar_bp', __name__)
 # route, method >> swagger doc >> function return response
 #### GET, /halo, request:-, response:{ "message": "Belajar Flask" }
 @belajar_bp.route('/halo', methods=['GET'])
-@swag_from('../docs/gethalo.yml')
+@swag_from('../docs/gethalo.yml') #perhatikan script import file (windows, linux, macOS)
 def get_halo():
     return jsonify({"message": "Belajar Flask"})
 ```
@@ -536,7 +535,6 @@ OUTPUT  : RES BODY : `{ "nama": "Silmi", "alamat": "Semarang" }`
 # Dokumentasi >> tag >> response >> schema >> properties >> {}
 # input : body, wajib ada, schema: object >> properties : { key : value(tipe,example) }
 # response : schema: object >> properties : { key : value(tipe,example) }
----
 tags:
   - Belajar API GET POST
 parameters:
@@ -723,7 +721,6 @@ LANGKAH : docs >> route siswa >> test siswa
 ```yml
 #/docs/siswa_read_all >> response array object >> [{}]
 # schema : array >> items :object >> properties {key, value(tipe)}
----
 tags:
   - Siswa
 responses:
@@ -894,7 +891,6 @@ SQL QUERY
 ```yml
 #request body >> object >> detail object >> response code >> response
 #docs/siswa_create.yml
----
 tags:
   - Siswa
 summary: Tambah data siswa baru

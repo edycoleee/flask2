@@ -705,14 +705,16 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 1. DEFINISI
 
 API SPESIFICATION
-| No | Method | Endpoint | Request Body (JSON) | Response (JSON) |
+
+| No  | Method | Endpoint | Request Body (JSON) | Response (JSON)                                                                                                       |
 | --- | ------ | -------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| 2 | GET | `/siswa` | (tidak ada) | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
+| 2   | GET    | `/siswa` | (tidak ada)         | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
 
 SQL QUERY
-| METHOD | PATH/ID | REQ BODY | QUERY SQL | CURSOR SQL |
+
+| METHOD   | PATH/ID | REQ BODY | QUERY SQL                | CURSOR SQL          |
 | -------- | ------- | -------- | ------------------------ | ------------------- |
-| READ ALL | - | - | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |
+| READ ALL | -       | -        | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |
 
 LANGKAH : docs >> route siswa >> test siswa
 
@@ -886,14 +888,16 @@ git push -u origin 08_create # Push ke remote dan set tracking branch
 1. DEFINISI
 
 API SPESIFICATION
-| No | Method | Endpoint | Request Body (JSON) | Response (JSON) |
+
+| No  | Method | Endpoint | Request Body (JSON)                         | Response (JSON)                                                                                           |
 | --- | ------ | -------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 1 | POST | `/siswa` | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+| 1   | POST   | `/siswa` | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
 
 SQL QUERY
-| METHOD | PATH/ID | REQ BODY | QUERY SQL | CURSOR SQL |
+
+| METHOD | PATH/ID | REQ BODY | QUERY SQL                                                                            | CURSOR SQL |
 | ------ | ------- | -------- | ------------------------------------------------------------------------------------ | ---------- |
-| CREATE | - | body | `INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)` `(data['nama'], data['alamat'])` | - |
+| CREATE | -       | body     | `INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)` `(data['nama'], data['alamat'])` | -          |
 
 2. DOCUMENTASI
 
@@ -1046,6 +1050,56 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 09_readone # Push ke remote dan set tracking branch
 ```
 
+1. DEFINISI
+
+API SPESIFIKASI
+
+| No  | Method | Endpoint      | Request Body (JSON) | Response (JSON)                                                                                     |
+| --- | ------ | ------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| 3   | GET    | `/siswa/<id>` | (tidak ada)         | `{ "message": "Data siswa ditemukan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+
+SQL QUERY
+
+| METHOD   | PATH/ID | REQ BODY | QUERY SQL                                   | CURSOR SQL          |
+| -------- | ------- | -------- | ------------------------------------------- | ------------------- |
+| READ ONE | id      | -        | `SELECT * FROM tb_siswa WHERE id=?` `(id,)` | `cursor.fetchone()` |
+
+2. DOKUMENTASI
+
+```yml
+#siswa_read_id.yml
+tags:
+  - Siswa
+parameters:
+  - name: siswa_id
+    in: path
+    type: integer
+    required: true
+    description: ID siswa
+responses:
+  200:
+    description: Detail siswa berdasarkan ID
+    examples:
+      application/json:
+        message: Data siswa ditemukan
+        data:
+          id: 3
+          nama: Coba
+          alamat: Bandung
+  404:
+    description: Siswa tidak ditemukan
+    examples:
+      application/json:
+        error: Siswa dengan ID tersebut tidak ditemukan
+  500:
+    description: Gagal mengambil data siswa
+    examples:
+      application/json:
+        error: Gagal mengambil data siswa
+```
+
+3. SERVICE - ROUTES - TEST
+
 ```py
 #services/siswa_service.py
 #...
@@ -1072,35 +1126,23 @@ def read_siswa_by_id(id):
 #test/test_siswa.py
 #...
 def test_read_siswa_by_id(client):
-    response = client.get('/siswa/1')
-    assert response.status_code in [200, 404]
-```
+    # Tambahkan siswa dulu
+    create_response = client.post('/siswa', json={"nama": "Coba", "alamat": "Bandung"})
+    siswa_id = create_response.get_json()['data']['id']
 
-```yml
-#siswa_read_id.yml
----
-tags:
-  - Siswa
-parameters:
-  - name: id
-    in: path
-    type: integer
-    required: true
-    description: ID siswa
-responses:
-  200:
-    description: Detail siswa berdasarkan ID
-    schema:
-      type: object
-      properties:
-        id:
-          type: integer
-        nama:
-          type: string
-        alamat:
-          type: string
-  404:
-    description: Siswa tidak ditemukan
+    # Baca siswa yang sudah dibuat
+    response = client.get(f'/siswa/{siswa_id}')
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert json_data['message'] == "Data siswa ditemukan"
+    assert json_data['data']['id'] == siswa_id
+    assert json_data['data']['nama'] == "Coba"
+    assert json_data['data']['alamat'] == "Bandung"
+
+    # Test siswa yang tidak ada
+    response_404 = client.get('/siswa/999999')
+    assert response_404.status_code == 404
+    assert response_404.get_json()['error'] == "Siswa dengan ID tersebut tidak ditemukan"
 ```
 
 - DELETE
@@ -1116,44 +1158,28 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 10_delete # Push ke remote dan set tracking branch
 ```
 
-```py
-#services/siswa_service.py
-#...
-def delete_siswa(id):
-    conn = get_db_connection()
-    cur = conn.execute("DELETE FROM tb_siswa WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
-    return cur.rowcount
+1. DEFINISI
 
-#routes/siswa.py
-#...
-@siswa_bp.route('/siswa/<int:id>', methods=['DELETE'])
-@swag_from('docs/siswa_delete.yml')
-def delete_siswa(id):
-    try:
-        deleted = siswa_service.delete_siswa(id)
-        if deleted:
-            return jsonify({"message": "Siswa berhasil dihapus"}), 200
-        return jsonify({"error": "Siswa tidak ditemukan"}), 404
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": "Gagal menghapus siswa"}), 500
+API SPESIFIKASI
 
-#test/test_siswa.py
-#...
-def test_delete_siswa(client):
-    response = client.delete('/siswa/1')
-    assert response.status_code in [200, 404]
-```
+| No  | Method | Endpoint      | Request Body (JSON) | Response (JSON)                                                |
+| --- | ------ | ------------- | ------------------- | -------------------------------------------------------------- |
+| 5   | DELETE | `/siswa/<id>` | (tidak ada)         | `{ "message": "Siswa berhasil dihapus", "data": { "id": 1 } }` |
+
+SQL QUERY
+
+| METHOD | PATH/ID | REQ BODY | QUERY SQL                                 | CURSOR SQL |
+| ------ | ------- | -------- | ----------------------------------------- | ---------- |
+| DELETE | id      | -        | `DELETE FROM tb_siswa WHERE id=?` `(id,)` | -          |
+
+2. DOKUMENTASI
 
 ```yml
 #docs/siswa_delete.yml
----
 tags:
   - Siswa
 parameters:
-  - name: id
+  - name: siswa_id
     in: path
     type: integer
     required: true
@@ -1161,8 +1187,77 @@ parameters:
 responses:
   200:
     description: Siswa berhasil dihapus
+    examples:
+      application/json:
+        message: Siswa berhasil dihapus
+        data:
+          id: 5
   404:
     description: Siswa tidak ditemukan
+    examples:
+      application/json:
+        error: Siswa dengan ID tersebut tidak ditemukan
+  500:
+    description: Gagal menghapus siswa
+    examples:
+      application/json:
+        error: Gagal menghapus siswa
+```
+
+3. SERVICE - ROUTES - TEST
+
+```py
+#services/siswa_service.py
+#...
+def delete_siswa(siswa_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM tb_siswa WHERE id = ?", (siswa_id,))
+    conn.commit()
+    deleted = cursor.rowcount
+    conn.close()
+    return deleted  # 1 jika berhasil dihapus, 0 jika tidak ditemukan
+
+
+#routes/siswa.py
+#...
+@siswa_bp.route('/siswa/<int:siswa_id>', methods=['DELETE'])
+@swag_from('docs/siswa_delete.yml')
+def delete_siswa(siswa_id):
+    try:
+        deleted = siswa_service.delete_siswa(siswa_id)
+        if deleted:
+            return jsonify({
+                "message": "Siswa berhasil dihapus",
+                "data": {
+                    "id": siswa_id
+                }
+            }), 200
+        return jsonify({"error": "Siswa dengan ID tersebut tidak ditemukan"}), 404
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "Gagal menghapus siswa"}), 500
+
+
+#test/test_siswa.py
+#...
+def test_delete_siswa(client):
+    # Tambahkan siswa terlebih dahulu
+    create_response = client.post('/siswa', json={"nama": "Delete Me", "alamat": "Nowhere"})
+    siswa_id = create_response.get_json()['data']['id']
+
+    # Lakukan DELETE
+    response = client.delete(f'/siswa/{siswa_id}')
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert json_data['message'] == "Siswa berhasil dihapus"
+    assert json_data['data']['id'] == siswa_id
+
+    # DELETE lagi → harusnya 404
+    response_2 = client.delete(f'/siswa/{siswa_id}')
+    assert response_2.status_code == 404
+    assert response_2.get_json()['error'] == "Siswa dengan ID tersebut tidak ditemukan"
+
 ```
 
 - UPDATE
@@ -1178,50 +1273,34 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 11_update # Push ke remote dan set tracking branch
 ```
 
-```py
-#services/siswa_service.py
-#...
-def update_siswa(id, nama, alamat):
-    conn = get_db_connection()
-    cur = conn.execute("UPDATE tb_siswa SET nama = ?, alamat = ? WHERE id = ?", (nama, alamat, id))
-    conn.commit()
-    conn.close()
-    return cur.rowcount
+1. DEFINISI
 
-#routes/siswa.py
-#...
-@siswa_bp.route('/siswa/<int:id>', methods=['PUT'])
-@swag_from('docs/siswa_update.yml')
-def update_siswa(id):
-    try:
-        data = request.get_json()
-        updated = siswa_service.update_siswa(id, data['nama'], data['alamat'])
-        if updated:
-            return jsonify({"message": "Siswa berhasil diperbarui"}), 200
-        return jsonify({"error": "Siswa tidak ditemukan"}), 404
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": "Gagal memperbarui siswa"}), 500
+API SPESIFIKASI
 
-#test/test_siswa.py
-#...
-def test_update_siswa(client):
-    response = client.put('/siswa/1', json={"nama": "Silmi Update", "alamat": "Bandung"})
-    assert response.status_code in [200, 404]
+| No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                                                                                 |
+| --- | ------ | ------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 4   | PUT    | `/siswa/<id>` | `{ "nama": "Silmi Updated", "alamat": "Jakarta" }` | `{ "message": "Siswa berhasil diperbarui", "data": { "id": 1, "nama": "Silmi Updated", "alamat": "Jakarta" } }` |
 
-```
+SQL QUERY
+
+| METHOD | PATH/ID | REQ BODY | QUERY SQL                                                                              | CURSOR SQL |
+| ------ | ------- | -------- | -------------------------------------------------------------------------------------- | ---------- |
+| UPDATE | id      | body     | `UPDATE tb_siswa SET nama=?, alamat=? WHERE id=?` `(data['nama'], data['alamat'], id)` | -          |
+
+2. DOKUMENTASI
 
 ```yml
-#siswa_update.yml
 ---
 tags:
   - Siswa
+summary: Perbarui data siswa berdasarkan ID
+description: Endpoint untuk memperbarui nama dan alamat siswa berdasarkan ID.
 parameters:
   - name: id
     in: path
-    type: integer
     required: true
-    description: ID siswa yang akan diupdate
+    type: integer
+    description: ID siswa yang akan diperbarui
   - in: body
     name: body
     required: true
@@ -1233,15 +1312,113 @@ parameters:
       properties:
         nama:
           type: string
-          example: Update Nama
+          example: Budi Updated
         alamat:
           type: string
-          example: Update Alamat
+          example: Surabaya
 responses:
   200:
     description: Siswa berhasil diperbarui
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Siswa berhasil diperbarui
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nama:
+              type: string
+              example: Budi Updated
+            alamat:
+              type: string
+              example: Surabaya
+  400:
+    description: Field wajib tidak diisi
+    examples:
+      application/json:
+        error: Field 'nama' dan 'alamat' wajib diisi
   404:
     description: Siswa tidak ditemukan
+    examples:
+      application/json:
+        error: Siswa tidak ditemukan
+  500:
+    description: Gagal memperbarui siswa
+    examples:
+      application/json:
+        error: Gagal memperbarui siswa
+```
+
+3. SERVICE - ROUTES - TEST
+
+```py
+#services/siswa_service.py
+#...
+def update_siswa(siswa_id, nama, alamat):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE tb_siswa SET nama = ?, alamat = ? WHERE id = ?",
+        (nama, alamat, siswa_id)
+    )
+    conn.commit()
+    updated = cursor.rowcount  # Mengecek apakah baris ter-update
+    conn.close()
+    return updated  # 0 jika tidak ada yang diupdate, 1 jika berhasil
+
+
+#routes/siswa.py
+#...
+@siswa_bp.route('/siswa/<int:siswa_id>', methods=['PUT'])
+@swag_from('docs/siswa_update.yml')
+def update_siswa(siswa_id):
+    try:
+        data = request.get_json()
+
+        # Validasi input
+        if not data or 'nama' not in data or 'alamat' not in data:
+            return jsonify({"error": "Field 'nama' dan 'alamat' wajib diisi"}), 400
+
+        updated = siswa_service.update_siswa(siswa_id, data['nama'], data['alamat'])
+
+        if updated == 0:
+            return jsonify({"error": "Siswa dengan ID tersebut tidak ditemukan"}), 404
+
+        return jsonify({
+            "message": "Siswa berhasil diperbarui",
+            "data": {
+                "id": siswa_id,
+                "nama": data['nama'],
+                "alamat": data['alamat']
+            }
+        }), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "Gagal memperbarui siswa"}), 500
+
+
+#test/test_siswa.py
+#...
+def test_update_siswa(client):
+    # Tambah siswa dulu agar bisa diupdate
+    create_response = client.post('/siswa', json={"nama": "Ani", "alamat": "Solo"})
+    siswa_id = create_response.get_json()['data']['id']
+
+    # Update siswa
+    response = client.put(f'/siswa/{siswa_id}', json={"nama": "Ani Updated", "alamat": "Semarang"})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert json_data['message'] == "Siswa berhasil diperbarui"
+    assert json_data['data']['id'] == siswa_id
+    assert json_data['data']['nama'] == "Ani Updated"
+    assert json_data['data']['alamat'] == "Semarang"
+
 ```
 
 ### 5. AUTH API
@@ -1294,6 +1471,70 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 12_register # Push ke remote dan set tracking branch
 ```
 
+1. DEFINISI
+
+API SPESIFIKASI
+
+SQL QUERY
+
+2. DOKUMENTASI
+
+```yml
+#auth/register.yml
+tags:
+  - Auth
+summary: Registrasi akun baru
+description: Endpoint untuk mendaftarkan akun pengguna baru.
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    description: Data user baru
+    schema:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: johndoe
+        password:
+          type: string
+          example: rahasia123
+responses:
+  201:
+    description: Registrasi berhasil
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Registrasi berhasil
+  400:
+    description: Input tidak lengkap
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Field 'username' dan 'password' wajib diisi
+  409:
+    description: Username sudah digunakan
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Username sudah digunakan
+```
+
+3. SERVICE - ROUTES - TEST
+
 ```py
 #/routes/auth.py
 from flask import Blueprint, request, jsonify
@@ -1312,6 +1553,11 @@ def hash_password(password):
 @swag_from('../docs/auth/register.yml')
 def register():
     data = request.get_json()
+
+    # Validasi input
+    if not data or 'username' not in data or 'password' not in data:
+      return jsonify({"error": "Field 'username' dan 'password' wajib diisi"}), 400
+
     username = data.get('username')
     password = hash_password(data.get('password'))
 
@@ -1356,44 +1602,39 @@ def client():
     with app.test_client() as client:
         yield client
 
-username = "testuser"
-password = "testpass"
 
-def test_register(client):
+def test_register_success(client):
     response = client.post('/register', json={
-        "username": username,
-        "password": password
+        "username": "testuser",
+        "password": "testpass"
     })
-    assert response.status_code in [201, 409]  # 201 (baru), 409 (sudah ada)
+    assert response.status_code == 201
+    assert response.get_json()["message"] == "Registrasi berhasil"
+
+def test_register_duplicate(client):
+    # Register pertama kali
+    client.post('/register', json={
+        "username": "testuser",
+        "password": "testpass"
+    })
+
+    # Register ulang dengan username yang sama
+    response = client.post('/register', json={
+        "username": "testuser",
+        "password": "testpass"
+    })
+    assert response.status_code == 409
+    assert response.get_json()["error"] == "Username sudah digunakan"
+
+def test_register_missing_fields(client):
+    response = client.post('/register', json={
+        "username": "incomplete"
+        # password tidak dikirim
+    })
+    assert response.status_code == 400
+    assert "wajib diisi" in response.get_json()["error"]
 
 #pytest test/test_auth.py
-```
-
-```yml
-#auth/register.yml
-tags:
-  - Auth
-parameters:
-  - in: body
-    name: body
-    required: true
-    schema:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          example: silmi
-        password:
-          type: string
-          example: silmi123
-responses:
-  201:
-    description: Registrasi berhasil
-  409:
-    description: Username sudah digunakan
 ```
 
 - LOGIN
@@ -1409,6 +1650,73 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 13_login # Push ke remote dan set tracking branch
 ```
 
+1. DEFINISI
+
+API SPESIFIKASI
+
+SQL QUERY
+
+2. DOKUMENTASI
+
+```yml
+#auth/login.yml
+tags:
+  - Auth
+summary: Login pengguna
+description: Endpoint untuk login dan mendapatkan token autentikasi.
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    description: Data login pengguna
+    schema:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: johndoe
+        password:
+          type: string
+          example: rahasia123
+responses:
+  200:
+    description: Login berhasil
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login berhasil
+        token:
+          type: string
+          example: 4a1f70de-5d72-48ac-9187-01d3b7c177dd
+  400:
+    description: Input tidak lengkap
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Field "username" dan "password" wajib diisi
+  401:
+    description: Login gagal
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Username atau password salah
+```
+
+3. SERVICE - ROUTES - TEST
+
 ```py
 #1. Folder routes/auth.py
 #..................
@@ -1416,6 +1724,10 @@ git push -u origin 13_login # Push ke remote dan set tracking branch
 @swag_from('../docs/auth/login.yml')
 def login():
     data = request.get_json()
+
+    if not data or 'username' not in data or 'password' not in data:
+      return jsonify({'error': 'Field "username" dan "password" wajib diisi'}), 400
+
     username = data.get('username')
     password = hash_password(data.get('password'))
 
@@ -1440,40 +1752,30 @@ def test_login(client):
     # Simpan token untuk test berikutnya
     global TOKEN
     TOKEN = json_data["token"]
-```
 
-```yml
-#auth/login.yml
-tags:
-  - Auth
-parameters:
-  - in: body
-    name: body
-    required: true
-    schema:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          example: silmi
-        password:
-          type: string
-          example: silmi123
-responses:
-  200:
-    description: Login berhasil, token dikembalikan
-    schema:
-      type: object
-      properties:
-        message:
-          type: string
-        token:
-          type: string
-  401:
-    description: Username atau password salah
+def test_login_wrong_password(client):
+    response = client.post('/login', json={
+        'username': 'testuser',
+        'password': 'salahpass'
+    })
+    assert response.status_code == 401
+    assert response.get_json()['error'] == 'Username atau password salah'
+
+def test_login_user_not_found(client):
+    response = client.post('/login', json={
+        'username': 'nouser',
+        'password': 'whatever'
+    })
+    assert response.status_code == 401
+    assert response.get_json()['error'] == 'Username atau password salah'
+
+def test_login_missing_fields(client):
+    response = client.post('/login', json={
+        'username': 'testuser'
+        # password tidak dikirim
+    })
+    assert response.status_code == 400
+    assert 'wajib diisi' in response.get_json()['error']
 ```
 
 - LOGOUT
@@ -1488,6 +1790,52 @@ git add .                       # Menambahkan semua perubahan ke staging area
 git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 14_logout # Push ke remote dan set tracking branch
 ```
+
+1. DEFINISI
+
+API SPESIFIKASI
+
+SQL QUERY
+
+2. DOKUMENTASI
+
+```yml
+#auth/logout.yml
+tags:
+  - Auth
+summary: Logout pengguna
+description: Endpoint untuk logout dengan menghapus token autentikasi.
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    type: string
+    description: Token autentikasi pengguna
+    example: 4a1f70de-5d72-48ac-9187-01d3b7c177dd
+responses:
+  200:
+    description: Logout berhasil
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Logout berhasil
+  401:
+    description: Token tidak valid atau tidak ada
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Token tidak valid
+```
+
+3. SERVICE - ROUTES - TEST
 
 ```py
 #1. Folder routes/auth.py
@@ -1512,26 +1860,18 @@ def test_logout(client):
     response = client.post('/logout', headers=headers)
     assert response.status_code == 200
     assert response.get_json().get("message") == "Logout berhasil"
-```
 
-```yml
-#auth/logout.yml
-tags:
-  - Auth
-summary: Logout user berdasarkan token
-produces:
-  - application/json
-parameters:
-  - name: Authorization
-    in: header
-    required: true
-    type: string
-    description: Token user
-responses:
-  200:
-    description: Logout berhasil
-  401:
-    description: Token tidak valid atau tidak ditemukan
+def test_logout_missing_token(client):
+    response = client.post('/logout')
+    assert response.status_code == 401
+    assert response.get_json()['error'] == 'Token tidak ditemukan'
+
+def test_logout_invalid_token(client):
+    response = client.post('/logout', headers={
+        'Authorization': 'invalid-token-xyz'
+    })
+    assert response.status_code == 401
+    assert response.get_json()['error'] == 'Token tidak valid'
 ```
 
 ### 5. AUTH API CRUD SISWA
@@ -1548,6 +1888,14 @@ git add .                       # Menambahkan semua perubahan ke staging area
 git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 15_crudauth # Push ke remote dan set tracking branch
 ```
+
+1. DEFINISI
+
+API SPESIFIKASI
+
+2. DOKUMENTASI
+
+3. SERVICE - ROUTES - TEST
 
 ```py
 #routes/siswa.py

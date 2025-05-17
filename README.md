@@ -602,6 +602,8 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 06_readall # Push ke remote dan set tracking branch
 ```
 
+1. MEMBUAT APISPESIFIKASI
+
 | No  | Method | Endpoint      | Request Body (JSON)                                | Response (JSON)                                                                                                       |
 | --- | ------ | ------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | 1   | POST   | `/siswa`      | `{ "nama": "Silmi", "alamat": "Semarang" }`        | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }`             |
@@ -615,6 +617,8 @@ Semua respons sukses mengembalikan message dan data: `{ "message": "", "data": {
 Untuk error, respons menggunakan: `{ "error": "Pesan error" }`
 
 LANGKAH : docs >> service >> routes >> app.py >> test_siswa.py >> TEST
+
+2. RANCANGAN FOLDER
 
 ```
 project-folder/
@@ -638,7 +642,7 @@ project-folder/
 └── siswa.db ← File SQLite (otomatis dibuat)
 ```
 
-- CREATE DATABASE
+3. CREATE DATABASE, REGISTER BLUEPRINT
 
 ```py
 # # # app.py
@@ -698,6 +702,8 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 
 - READ ALL
 
+1. DEFINISI
+
 API SPESIFICATION
 | No  | Method | Endpoint | Request Body (JSON) | Response (JSON)                                                                                                       |
 | --- | ------ | -------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -709,6 +715,8 @@ SQL QUERY
 | READ ALL | -       | -        | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |
 
 LANGKAH : docs >> route siswa >> test siswa
+
+2. DOKUMENTASI
 
 ```yml
 #/docs/siswa_read_all >> response array object >> [{}]
@@ -743,6 +751,7 @@ responses:
       application/json:
         error: Gagal mengambil data siswa
 ```
+3. API ROUTE DAN TEST
 
 ```py
 #routes/siswa.py

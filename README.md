@@ -616,6 +616,7 @@ Untuk error, respons menggunakan: `{ "error": "Pesan error" }`
 
 LANGKAH : docs >> service >> routes >> app.py >> test_siswa.py >> TEST
 
+```
 project-folder/
 ├── app.py
 ├── routes/
@@ -635,6 +636,7 @@ project-folder/
 │ ├── test_siswa.py
 │ └── test_belajar.py
 └── siswa.db ← File SQLite (otomatis dibuat)
+```
 
 - CREATE DATABASE
 
@@ -696,10 +698,12 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 
 - READ ALL
 
+API SPESIFICATION
 | No  | Method | Endpoint | Request Body (JSON) | Response (JSON)                                                                                                       |
 | --- | ------ | -------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | 2   | GET    | `/siswa` | (tidak ada)         | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
 
+SQL QUERY
 | METHOD   | PATH/ID | REQ BODY | QUERY SQL                | CURSOR SQL          |
 | -------- | ------- | -------- | ------------------------ | ------------------- |
 | READ ALL | -       | -        | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |

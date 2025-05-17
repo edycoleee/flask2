@@ -821,6 +821,16 @@ git commit -m "finish"          # Commit dengan pesan "finish"
 git push -u origin 07_readallclean # Push ke remote dan set tracking branch
 ```
 
+```
+project-folder/
+├── app.py
+├── routes/
+│ ├── siswa.py
+│ └── belajar.py
+├── services/
+│ └── siswa_service.py ← Logika SQL
+```
+
 ```py
 #services/siswa_service.py
 # funct connection >> return object connection
@@ -867,43 +877,19 @@ def read_all_siswa():
 
 #### branch 08_create
 
-| No  | Method | Endpoint | Request Body (JSON)                         | Response (JSON)                                                                                           |
+1. DEFINISI
+
+API SPESIFICATION
+| No | Method | Endpoint | Request Body (JSON) | Response (JSON) |
 | --- | ------ | -------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 1   | POST   | `/siswa` | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
+| 1 | POST | `/siswa` | `{ "nama": "Silmi", "alamat": "Semarang" }` | `{ "message": "Siswa berhasil ditambahkan", "data": { "id": 1, "nama": "Silmi", "alamat": "Semarang" } }` |
 
-| METHOD | PATH/ID | REQ BODY | QUERY SQL                                                                            | CURSOR SQL |
+SQL QUERY
+| METHOD | PATH/ID | REQ BODY | QUERY SQL | CURSOR SQL |
 | ------ | ------- | -------- | ------------------------------------------------------------------------------------ | ---------- |
-| CREATE | -       | body     | `INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)` `(data['nama'], data['alamat'])` | -          |
+| CREATE | - | body | `INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)` `(data['nama'], data['alamat'])` | - |
 
-```py
-#services/siswa_service.py
-#...
-def create_siswa(nama, alamat):
-    conn = get_db_connection()
-    conn.execute("INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)", (nama, alamat))
-    conn.commit()
-    conn.close()
-
-#routes/siswa.py
-#...
-@siswa_bp.route('/siswa', methods=['POST'])
-@swag_from('docs/siswa_create.yml')
-def create_siswa():
-    try:
-        data = request.get_json()
-        siswa_service.create_siswa(data['nama'], data['alamat'])
-        return jsonify({"message": "Siswa berhasil ditambahkan"}), 201
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": "Gagal menambahkan siswa"}), 500
-
-#test/test_siswa.py
-#...
-def test_create_siswa(client):
-    response = client.post('/siswa', json={"nama": "Budi", "alamat": "Jogja"})
-    assert response.status_code == 201
-    assert response.json['message'] == "Siswa berhasil ditambahkan"
-```
+2. DOCUMENTASI
 
 ```yml
 #request body >> object >> detail object >> response code >> response
@@ -911,6 +897,8 @@ def test_create_siswa(client):
 ---
 tags:
   - Siswa
+summary: Tambah data siswa baru
+description: Endpoint untuk menambahkan data siswa ke dalam database.
 parameters:
   - in: body
     name: body
@@ -930,12 +918,90 @@ parameters:
 responses:
   201:
     description: Siswa berhasil ditambahkan
-    content:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Siswa berhasil ditambahkan
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nama:
+              type: string
+              example: Budi
+            alamat:
+              type: string
+              example: Jakarta
+  400:
+    description: Input tidak valid
+    examples:
       application/json:
-        example:
-          message: Siswa berhasil ditambahkan
+        error: Field 'nama' dan 'alamat' wajib diisi
   500:
     description: Gagal menambahkan siswa
+    examples:
+      application/json:
+        error: Gagal menambahkan siswa
+```
+
+3. SERVICE - ROUTE - TEST
+
+```py
+#services/siswa_service.py
+#...
+def create_siswa(nama, alamat):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)",
+        (nama, alamat)
+    )
+    conn.commit()
+    siswa_id = cursor.lastrowid
+    conn.close()
+    return siswa_id
+
+
+#routes/siswa.py
+#...
+@siswa_bp.route('/siswa', methods=['POST'])
+@swag_from('docs/siswa_create.yml')
+def create_siswa():
+    try:
+        data = request.get_json()
+        # Validasi input sederhana
+        if not data or 'nama' not in data or 'alamat' not in data:
+            return jsonify({"error": "Field 'nama' dan 'alamat' wajib diisi"}), 400
+
+        siswa_id = siswa_service.create_siswa(data['nama'], data['alamat'])
+
+        return jsonify({
+            "message": "Siswa berhasil ditambahkan",
+            "data": {
+                "id": siswa_id,
+                "nama": data['nama'],
+                "alamat": data['alamat']
+            }
+        }), 201
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "Gagal menambahkan siswa"}), 500
+
+#test/test_siswa.py
+#...
+def test_create_siswa(client):
+    response = client.post('/siswa', json={"nama": "Silmi", "alamat": "Semarang"})
+    assert response.status_code == 201
+    json_data = response.get_json()
+    assert json_data['message'] == "Siswa berhasil ditambahkan"
+    assert json_data['data']['nama'] == "Silmi"
+    assert json_data['data']['alamat'] == "Semarang"
+    assert isinstance(json_data['data']['id'], int)
 ```
 
 - READ ONE

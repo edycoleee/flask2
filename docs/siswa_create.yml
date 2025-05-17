@@ -1,0 +1,53 @@
+#request body >> object >> detail object >> response code >> response
+#docs/siswa_create.yml
+tags:
+  - Siswa
+summary: Tambah data siswa baru
+description: Endpoint untuk menambahkan data siswa ke dalam database.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - nama
+        - alamat
+      properties:
+        nama:
+          type: string
+          example: Budi
+        alamat:
+          type: string
+          example: Jakarta
+responses:
+  201:
+    description: Siswa berhasil ditambahkan
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Siswa berhasil ditambahkan
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nama:
+              type: string
+              example: Budi
+            alamat:
+              type: string
+              example: Jakarta
+  400:
+    description: Input tidak valid
+    examples:
+      application/json:
+        error: Field 'nama' dan 'alamat' wajib diisi
+  500:
+    description: Gagal menambahkan siswa
+    examples:
+      application/json:
+        error: Gagal menambahkan siswa

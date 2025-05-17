@@ -2,7 +2,6 @@
 # Dokumentasi >> tag >> response >> schema >> properties >> {}
 # input : body, wajib ada, schema: object >> properties : { key : value(tipe,example) }
 # response : schema: object >> properties : { key : value(tipe,example) }
----
 tags:
   - Belajar API GET POST
 parameters:

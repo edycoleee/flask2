@@ -1,6 +1,5 @@
 #/docs/siswa_read_all >> response array object >> [{}]
 # schema : array >> items :object >> properties {key, value(tipe)}
----
 tags:
   - Siswa
 responses:

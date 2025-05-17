@@ -19,3 +19,15 @@ def get_halo():
 @swag_from('../docs/nama.yml')
 def halo_nama(nama):
     return jsonify({"message": f"Halo {nama}"})
+
+# tambahkan #/routes/belajar.py
+# route, method >> swagger doc >> function >> get request data >> return response
+@belajar_bp.route('/halo', methods=['POST'])
+@swag_from('../docs/posthalo.yml')
+def halo_post():
+    from flask import request
+    data = request.get_json()
+    return jsonify({
+        "nama": data.get("nama"),
+        "alamat": data.get("alamat")
+    })

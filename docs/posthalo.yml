@@ -1,0 +1,33 @@
+# /docs/posthalo.yml
+# Dokumentasi >> tag >> response >> schema >> properties >> {}
+# input : body, wajib ada, schema: object >> properties : { key : value(tipe,example) }
+# response : schema: object >> properties : { key : value(tipe,example) }
+---
+tags:
+  - Belajar API GET POST
+parameters:
+  - in: body # request body
+    name: body
+    required: true
+    schema:
+      type: object
+      required: # semua key
+        - nama
+        - alamat
+      properties: # semua value >> tipe >> example
+        nama:
+          type: string
+          example: Silmi
+        alamat:
+          type: string
+          example: Semarang
+responses:
+  200:
+    description: Data berhasil diterima
+    schema: # reresponse body
+      type: object
+      properties:
+        nama:
+          type: string
+        alamat:
+          type: string

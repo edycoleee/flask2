@@ -16,9 +16,17 @@ def test_hallo_endpoint(client):
     # Pastikan respon JSON sesuai
     assert response.get_json() == {"message": "Belajar Flask"}
 
-    # function test >> assert response
+# function test >> assert response
 #/test/test_belajar.py
 def test_halo_nama(client):
     response = client.get('/nama/silmi')
     assert response.status_code == 200
     assert response.get_json() == {"message": "Halo silmi"}
+
+#tambahkan #/test/test_belajar.py
+# function test >> payload ke body >> assert response
+def test_post_halo(client):
+    payload = {"nama": "Silmi", "alamat": "Semarang"}
+    response = client.post('/halo', json=payload)
+    assert response.status_code == 200
+    assert response.get_json() == payload

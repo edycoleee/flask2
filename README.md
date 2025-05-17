@@ -532,6 +532,7 @@ OUTPUT  : RES BODY : `{ "nama": "Silmi", "alamat": "Semarang" }`
 ```
 
 ```yml
+# /docs/posthalo.yml
 # Dokumentasi >> tag >> response >> schema >> properties >> {}
 # input : body, wajib ada, schema: object >> properties : { key : value(tipe,example) }
 # response : schema: object >> properties : { key : value(tipe,example) }
@@ -570,7 +571,7 @@ responses:
 # tambahkan #/routes/belajar.py
 # route, method >> swagger doc >> function >> get request data >> return response
 @belajar_bp.route('/halo', methods=['POST'])
-@swag_from('../docs/halo_post.yml')
+@swag_from('../docs/posthalo.yml')
 def halo_post():
     from flask import request
     data = request.get_json()

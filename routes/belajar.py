@@ -12,3 +12,10 @@ belajar_bp = Blueprint('belajar_bp', __name__)
 @swag_from('../docs/gethalo.yml')
 def get_halo():
     return jsonify({"message": "Belajar Flask"})
+
+# tambahkan #/routes/belajar.py
+# route, method >> swagger doc >> function return response
+@belajar_bp.route('/nama/<nama>', methods=['GET'])
+@swag_from('../docs/nama.yml')
+def halo_nama(nama):
+    return jsonify({"message": f"Halo {nama}"})

@@ -1,0 +1,21 @@
+#/docs/nama.yml
+# membuat input path, response { "message": "Halo silmi" }
+# path : variable name, string, wajib ada, descp
+# response : schema: object >> properties : { key : value(tipe,example) }
+tags:
+  - Belajar API GET POST #Judul
+parameters:
+  - in: path #params pada header
+    name: nama #nama variabel
+    type: string #tipe
+    required: true
+    description: Nama pengguna yang ingin disapa
+responses:
+  200:
+    description: Respons sukses
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Halo silmi

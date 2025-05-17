@@ -468,6 +468,7 @@ LANGKAH : docs >> belajar.py >> test_belajar.py >> TEST
 | 2   | GET    | `/nama/<nama>` | (tidak ada)         | `{ "message": "Halo silmi" }` |
 
 ```yml
+#/docs/nama.yml
 # membuat input path, response { "message": "Halo silmi" }
 # path : variable name, string, wajib ada, descp
 # response : schema: object >> properties : { key : value(tipe,example) }

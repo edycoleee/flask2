@@ -21,26 +21,3 @@ def read_all_siswa():
         return jsonify({"error": "Gagal mengambil data siswa"}), 500
 
 #- CREATE
-@siswa_bp.route('/siswa', methods=['POST'])
-@swag_from('../docs/siswa_create.yml')
-def create_siswa():
-    try:
-        data = request.get_json()
-        # Validasi input sederhana
-        if not data or 'nama' not in data or 'alamat' not in data:
-            return jsonify({"error": "Field 'nama' dan 'alamat' wajib diisi"}), 400
-
-        siswa_id = siswa_service.create_siswa(data['nama'], data['alamat'])
-
-        return jsonify({
-            "message": "Siswa berhasil ditambahkan",
-            "data": {
-                "id": siswa_id,
-                "nama": data['nama'],
-                "alamat": data['alamat']
-            }
-        }), 201
-
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": "Gagal menambahkan siswa"}), 500

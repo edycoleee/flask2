@@ -20,36 +20,3 @@ def test_get_all_siswa(client):
     assert json_data['message'] == "Daftar siswa berhasil diambil"
     # assert >> berupa json >> list
     assert isinstance(json_data['data'], list)
-
-def test_create_siswa(client):
-    response = client.post('/siswa', json={"nama": "Silmi", "alamat": "Semarang"})
-    assert response.status_code == 201
-    json_data = response.get_json()
-    assert json_data['message'] == "Siswa berhasil ditambahkan"
-    assert json_data['data']['nama'] == "Silmi"
-    assert json_data['data']['alamat'] == "Semarang"
-    assert isinstance(json_data['data']['id'], int)
-
-from unittest.mock import patch
-
-# Test gagal insert karena data kosong atau field tidak lengkap
-def test_create_siswa_gagal_validasi(client):
-    # data kosong
-    response = client.post('/siswa', json={})
-    assert response.status_code == 400
-    assert response.get_json()['error'] == "Field 'nama' dan 'alamat' wajib diisi"
-
-    # hanya ada nama
-    response = client.post('/siswa', json={"nama": "Silmi"})
-    assert response.status_code == 400
-
-    # hanya ada alamat
-    response = client.post('/siswa', json={"alamat": "Jakarta"})
-    assert response.status_code == 400
-
-# Test gagal insert karena terjadi exception di service
-def test_create_siswa_gagal_exception(client):
-    with patch('services.siswa_service.create_siswa', side_effect=Exception("DB error")):
-        response = client.post('/siswa', json={"nama": "Silmi", "alamat": "Semarang"})
-        assert response.status_code == 500
-        assert response.get_json()['error'] == "Gagal menambahkan siswa"

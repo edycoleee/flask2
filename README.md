@@ -874,6 +874,15 @@ def read_all_siswa():
 
 #### branch 08_create
 
+```
+git branch 08_create         # Membuat branch baru
+git checkout 08_create       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 08_create # Push ke remote dan set tracking branch
+```
+
 1. DEFINISI
 
 API SPESIFICATION
@@ -998,11 +1007,44 @@ def test_create_siswa(client):
     assert json_data['data']['nama'] == "Silmi"
     assert json_data['data']['alamat'] == "Semarang"
     assert isinstance(json_data['data']['id'], int)
+
+from unittest.mock import patch
+
+# Test gagal insert karena data kosong atau field tidak lengkap
+def test_create_siswa_gagal_validasi(client):
+    # data kosong
+    response = client.post('/siswa', json={})
+    assert response.status_code == 400
+    assert response.get_json()['error'] == "Field 'nama' dan 'alamat' wajib diisi"
+
+    # hanya ada nama
+    response = client.post('/siswa', json={"nama": "Silmi"})
+    assert response.status_code == 400
+
+    # hanya ada alamat
+    response = client.post('/siswa', json={"alamat": "Jakarta"})
+    assert response.status_code == 400
+
+# Test gagal insert karena terjadi exception di service
+def test_create_siswa_gagal_exception(client):
+    with patch('services.siswa_service.create_siswa', side_effect=Exception("DB error")):
+        response = client.post('/siswa', json={"nama": "Silmi", "alamat": "Semarang"})
+        assert response.status_code == 500
+        assert response.get_json()['error'] == "Gagal menambahkan siswa"
 ```
 
 - READ ONE
 
 #### branch 09_readone
+
+```
+git branch 09_readone         # Membuat branch baru
+git checkout 09_readone       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 09_readone # Push ke remote dan set tracking branch
+```
 
 ```py
 #services/siswa_service.py
@@ -1065,6 +1107,15 @@ responses:
 
 #### branch 10_delete
 
+```
+git branch 10_delete         # Membuat branch baru
+git checkout 10_delete       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 10_delete # Push ke remote dan set tracking branch
+```
+
 ```py
 #services/siswa_service.py
 #...
@@ -1117,6 +1168,15 @@ responses:
 - UPDATE
 
 #### branch 11_update
+
+```
+git branch 11_update         # Membuat branch baru
+git checkout 11_update       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 11_update # Push ke remote dan set tracking branch
+```
 
 ```py
 #services/siswa_service.py
@@ -1225,6 +1285,15 @@ conn.execute('''
 
 #### branch 12_register
 
+```
+git branch 12_register         # Membuat branch baru
+git checkout 12_register       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 12_register # Push ke remote dan set tracking branch
+```
+
 ```py
 #/routes/auth.py
 from flask import Blueprint, request, jsonify
@@ -1331,6 +1400,15 @@ responses:
 
 #### branch 13_login
 
+```
+git branch 13_login         # Membuat branch baru
+git checkout 13_login       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 13_login # Push ke remote dan set tracking branch
+```
+
 ```py
 #1. Folder routes/auth.py
 #..................
@@ -1402,6 +1480,15 @@ responses:
 
 #### branch 14_logout
 
+```
+git branch 14_logout         # Membuat branch baru
+git checkout 14_logout       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 14_logout # Push ke remote dan set tracking branch
+```
+
 ```py
 #1. Folder routes/auth.py
 #..................
@@ -1452,6 +1539,15 @@ responses:
 - CRUD
 
 #### branch 15_crudauth
+
+```
+git branch 15_crudauth         # Membuat branch baru
+git checkout 15_crudauth       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 15_crudauth # Push ke remote dan set tracking branch
+```
 
 ```py
 #routes/siswa.py
@@ -1684,6 +1780,15 @@ responses:
 
 #### branch 16_testcrud
 
+```
+git branch 16_testcrud         # Membuat branch baru
+git checkout 16_testcrud       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 16_testcrud # Push ke remote dan set tracking branch
+```
+
 ```py
 import pytest
 from app import app
@@ -1766,6 +1871,24 @@ def test_delete_siswa(client, auth_headers):
 
 #### branch 17_docker
 
+```
+git branch 17_docker         # Membuat branch baru
+git checkout 17_docker       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 17_docker # Push ke remote dan set tracking branch
+```
+
 ### 7. GUNAKAN DATABASE POSTGREE > DOCKER
 
 #### branch 18_postgre
+
+```
+git branch 18_postgre         # Membuat branch baru
+git checkout 18_postgre       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 18_postgre # Push ke remote dan set tracking branch
+```

@@ -16,3 +16,14 @@ def read_all_siswa():
     conn.close()
     return [dict(row) for row in siswa]
 
+def create_siswa(nama, alamat):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO tb_siswa (nama, alamat) VALUES (?, ?)",
+        (nama, alamat)
+    )
+    conn.commit()
+    siswa_id = cursor.lastrowid
+    conn.close()
+    return siswa_id

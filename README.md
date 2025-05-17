@@ -625,19 +625,19 @@ project-folder/
 ├── app.py
 ├── routes/
 │ ├── siswa.py ← Semua endpoint siswa
-│ └── belajar.py ← Endpoint halo dan nama
+│ └── belajar.py
 ├── docs/ ← Swagger YAML
 │ ├── siswa_create.yml
 │ ├── siswa_delete.yml
 │ ├── siswa_update.yml
-│ ├── siswa_read_all.yml
+│ ├── siswa_read_all.yml ← docs utk read all
 │ ├── siswa_read_id.yml
 │ ├── nama.yml
 │ ├── halo_post.yml
 │ └── halo.yml
 ├── test/
 │ ├── **init**.py
-│ ├── test_siswa.py
+│ ├── test_siswa.py ← test untuk siswa api
 │ └── test_belajar.py
 └── siswa.db ← File SQLite (otomatis dibuat)
 ```
@@ -646,6 +646,8 @@ project-folder/
 
 ```py
 # # # app.py
+import sqlite3
+
 #.....
 # Inisialisasi DB >> membuat db dan create table
 def init_db():
@@ -705,14 +707,14 @@ with sqlite3.connect('siswa.db') as conn:   # 1 membuat koneksi sql
 1. DEFINISI
 
 API SPESIFICATION
-| No  | Method | Endpoint | Request Body (JSON) | Response (JSON)                                                                                                       |
+| No | Method | Endpoint | Request Body (JSON) | Response (JSON) |
 | --- | ------ | -------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| 2   | GET    | `/siswa` | (tidak ada)         | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
+| 2 | GET | `/siswa` | (tidak ada) | `{ "message": "Daftar siswa berhasil diambil", "data": [ { "id": 1, "nama": "Silmi", "alamat": "Semarang" }, ... ] }` |
 
 SQL QUERY
-| METHOD   | PATH/ID | REQ BODY | QUERY SQL                | CURSOR SQL          |
+| METHOD | PATH/ID | REQ BODY | QUERY SQL | CURSOR SQL |
 | -------- | ------- | -------- | ------------------------ | ------------------- |
-| READ ALL | -       | -        | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |
+| READ ALL | - | - | `SELECT * FROM tb_siswa` | `cursor.fetchall()` |
 
 LANGKAH : docs >> route siswa >> test siswa
 
@@ -721,7 +723,6 @@ LANGKAH : docs >> route siswa >> test siswa
 ```yml
 #/docs/siswa_read_all >> response array object >> [{}]
 # schema : array >> items :object >> properties {key, value(tipe)}
----
 ---
 tags:
   - Siswa
@@ -751,6 +752,7 @@ responses:
       application/json:
         error: Gagal mengambil data siswa
 ```
+
 3. API ROUTE DAN TEST
 
 ```py
@@ -802,6 +804,8 @@ def test_get_all_siswa(client):
     assert json_data['message'] == "Daftar siswa berhasil diambil"
     # assert >> berupa json >> list
     assert isinstance(json_data['data'], list)
+
+#pytest test\test_siswa.py
 ```
 
 - READ ALL WITH SERVICES

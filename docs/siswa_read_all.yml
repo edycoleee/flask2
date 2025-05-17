@@ -1,0 +1,30 @@
+#/docs/siswa_read_all >> response array object >> [{}]
+# schema : array >> items :object >> properties {key, value(tipe)}
+---
+tags:
+  - Siswa
+responses:
+  200:
+    description: Daftar semua siswa
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Daftar siswa berhasil diambil
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              nama:
+                type: string
+              alamat:
+                type: string
+  500:
+    description: Gagal mengambil data siswa
+    examples:
+      application/json:
+        error: Gagal mengambil data siswa

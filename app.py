@@ -1,4 +1,5 @@
 #a. import Flask
+import sqlite3
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flasgger import Swagger
@@ -13,10 +14,26 @@ app.config['SWAGGER'] = {
 }
 swagger = Swagger(app)
 
+# Inisialisasi DB >> membuat db dan create table
+def init_db():
+    with sqlite3.connect('siswa.db') as conn:
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS tb_siswa (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nama TEXT NOT NULL,
+                alamat TEXT NOT NULL
+            )
+        ''')
+
+init_db()
+
 #c. create route, method
 # Register blueprint >> Seperti Router() di Express
 from routes.belajar import belajar_bp  # perbaikan import
+# Register Blueprint >> siswa
+from routes.siswa import siswa_bp
 
+app.register_blueprint(siswa_bp)
 app.register_blueprint(belajar_bp)
 
 #e. runc object default/host,port

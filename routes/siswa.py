@@ -44,3 +44,19 @@ def create_siswa():
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": "Gagal menambahkan siswa"}), 500
+
+#- READ ID
+@siswa_bp.route('/siswa/<int:siswa_id>', methods=['GET'])
+@swag_from('docs/siswa_read_id.yml')
+def read_siswa_by_id(siswa_id):
+    try:
+        data = siswa_service.read_siswa_by_id(siswa_id)
+        if data:
+            return jsonify({
+                "message": "Data siswa ditemukan",
+                "data": data
+            }), 200
+        return jsonify({"error": "Siswa dengan ID tersebut tidak ditemukan"}), 404
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "Gagal mengambil data siswa"}), 500

@@ -53,3 +53,22 @@ def test_create_siswa_gagal_exception(client):
         response = client.post('/siswa', json={"nama": "Silmi", "alamat": "Semarang"})
         assert response.status_code == 500
         assert response.get_json()['error'] == "Gagal menambahkan siswa"
+
+def test_read_siswa_by_id(client):
+    # Tambahkan siswa dulu
+    create_response = client.post('/siswa', json={"nama": "Coba", "alamat": "Bandung"})
+    siswa_id = create_response.get_json()['data']['id']
+
+    # Baca siswa yang sudah dibuat
+    response = client.get(f'/siswa/{siswa_id}')
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert json_data['message'] == "Data siswa ditemukan"
+    assert json_data['data']['id'] == siswa_id
+    assert json_data['data']['nama'] == "Coba"
+    assert json_data['data']['alamat'] == "Bandung"
+
+    # Test siswa yang tidak ada
+    response_404 = client.get('/siswa/999999')
+    assert response_404.status_code == 404
+    assert response_404.get_json()['error'] == "Siswa dengan ID tersebut tidak ditemukan"

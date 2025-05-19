@@ -1,0 +1,29 @@
+#siswa_read_id.yml
+tags:
+  - Siswa
+parameters:
+  - name: siswa_id
+    in: path
+    type: integer
+    required: true
+    description: ID siswa
+responses:
+  200:
+    description: Detail siswa berdasarkan ID
+    examples:
+      application/json:
+        message: Data siswa ditemukan
+        data:
+          id: 3
+          nama: Coba
+          alamat: Bandung
+  404:
+    description: Siswa tidak ditemukan
+    examples:
+      application/json:
+        error: Siswa dengan ID tersebut tidak ditemukan
+  500:
+    description: Gagal mengambil data siswa
+    examples:
+      application/json:
+        error: Gagal mengambil data siswa

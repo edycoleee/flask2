@@ -1103,25 +1103,32 @@ responses:
 ```py
 #services/siswa_service.py
 #...
-def read_siswa_by_id(id):
+def read_siswa_by_id(siswa_id):
     conn = get_db_connection()
-    row = conn.execute("SELECT id, nama, alamat FROM tb_siswa WHERE id = ?", (id,)).fetchone()
+    row = conn.execute(
+        "SELECT id, nama, alamat FROM tb_siswa WHERE id = ?",
+        (siswa_id,)
+    ).fetchone()
     conn.close()
     return dict(row) if row else None
 
+
 #routes/siswa.py
 #...
-@siswa_bp.route('/siswa/<int:id>', methods=['GET'])
+@siswa_bp.route('/siswa/<int:siswa_id>', methods=['GET'])
 @swag_from('docs/siswa_read_id.yml')
-def read_siswa_by_id(id):
+def read_siswa_by_id(siswa_id):
     try:
-        data = siswa_service.read_siswa_by_id(id)
+        data = siswa_service.read_siswa_by_id(siswa_id)
         if data:
-            return jsonify(data), 200
-        return jsonify({"error": "Siswa tidak ditemukan"}), 404
+            return jsonify({
+                "message": "Data siswa ditemukan",
+                "data": data
+            }), 200
+        return jsonify({"error": "Siswa dengan ID tersebut tidak ditemukan"}), 404
     except Exception as e:
         print("Error:", e)
-        return jsonify({"error": "Gagal mengambil data"}), 500
+        return jsonify({"error": "Gagal mengambil data siswa"}), 500
 
 #test/test_siswa.py
 #...

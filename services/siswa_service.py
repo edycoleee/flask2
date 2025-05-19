@@ -27,3 +27,9 @@ def create_siswa(nama, alamat):
     siswa_id = cursor.lastrowid
     conn.close()
     return siswa_id
+
+def read_siswa_by_id(id):
+    conn = get_db_connection()
+    row = conn.execute("SELECT id, nama, alamat FROM tb_siswa WHERE id = ?", (id,)).fetchone()
+    conn.close()
+    return dict(row) if row else None

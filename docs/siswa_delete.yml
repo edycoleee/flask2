@@ -1,0 +1,27 @@
+#docs/siswa_delete.yml
+tags:
+  - Siswa
+parameters:
+  - name: siswa_id
+    in: path
+    type: integer
+    required: true
+    description: ID siswa yang akan dihapus
+responses:
+  200:
+    description: Siswa berhasil dihapus
+    examples:
+      application/json:
+        message: Siswa berhasil dihapus
+        data:
+          id: 5
+  404:
+    description: Siswa tidak ditemukan
+    examples:
+      application/json:
+        error: Siswa dengan ID tersebut tidak ditemukan
+  500:
+    description: Gagal menghapus siswa
+    examples:
+      application/json:
+        error: Gagal menghapus siswa

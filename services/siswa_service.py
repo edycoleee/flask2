@@ -33,3 +33,12 @@ def read_siswa_by_id(id):
     row = conn.execute("SELECT id, nama, alamat FROM tb_siswa WHERE id = ?", (id,)).fetchone()
     conn.close()
     return dict(row) if row else None
+
+def delete_siswa(siswa_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM tb_siswa WHERE id = ?", (siswa_id,))
+    conn.commit()
+    deleted = cursor.rowcount
+    conn.close()
+    return deleted  # 1 jika berhasil dihapus, 0 jika tidak ditemukan

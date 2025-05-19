@@ -858,7 +858,7 @@ from services import siswa_service
 siswa_bp = Blueprint('siswa', __name__)
 
 @siswa_bp.route('/siswa', methods=['GET'])
-@swag_from('docs/siswa_read_all.yml')
+@swag_from('../docs/siswa_read_all.yml')
 def read_all_siswa():
     try:
         data = siswa_service.read_all_siswa()
@@ -978,7 +978,7 @@ def create_siswa(nama, alamat):
 #routes/siswa.py
 #...
 @siswa_bp.route('/siswa', methods=['POST'])
-@swag_from('docs/siswa_create.yml')
+@swag_from('../docs/siswa_create.yml')
 def create_siswa():
     try:
         data = request.get_json()
@@ -1116,7 +1116,7 @@ def read_siswa_by_id(siswa_id):
 #routes/siswa.py
 #...
 @siswa_bp.route('/siswa/<int:siswa_id>', methods=['GET'])
-@swag_from('docs/siswa_read_id.yml')
+@swag_from('../docs/siswa_read_id.yml')
 def read_siswa_by_id(siswa_id):
     try:
         data = siswa_service.read_siswa_by_id(siswa_id)
@@ -1229,7 +1229,7 @@ def delete_siswa(siswa_id):
 #routes/siswa.py
 #...
 @siswa_bp.route('/siswa/<int:siswa_id>', methods=['DELETE'])
-@swag_from('docs/siswa_delete.yml')
+@swag_from('../docs/siswa_delete.yml')
 def delete_siswa(siswa_id):
     try:
         deleted = siswa_service.delete_siswa(siswa_id)
@@ -1382,7 +1382,7 @@ def update_siswa(siswa_id, nama, alamat):
 #routes/siswa.py
 #...
 @siswa_bp.route('/siswa/<int:siswa_id>', methods=['PUT'])
-@swag_from('docs/siswa_update.yml')
+@swag_from('../docs/siswa_update.yml')
 def update_siswa(siswa_id):
     try:
         data = request.get_json()

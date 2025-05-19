@@ -1430,6 +1430,18 @@ def test_update_siswa(client):
 
 ### 5. AUTH API
 
+#### branch 12_register
+
+```
+git branch 12_register         # Membuat branch baru
+git checkout 12_register       # Berpindah ke branch tersebut
+# (lakukan perubahan pada file sesuai kebutuhan)
+git add .                       # Menambahkan semua perubahan ke staging area
+git commit -m "finish"          # Commit dengan pesan "finish"
+git push -u origin 12_register # Push ke remote dan set tracking branch
+```
+
+
 | No  | Method | URL       | Request JSON                                     | Response JSON (Berhasil)                          | Response JSON (Gagal)                                             |
 | --- | ------ | --------- | ------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------- |
 | 1   | POST   | /register | `{ "username": "user1", "password": "pass123" }` | `{ "message": "Registrasi berhasil" }`            | `409 Conflict`: `{ "error": "Username sudah digunakan" }`         |
@@ -1467,16 +1479,6 @@ conn.execute('''
 
 - REGISTER
 
-#### branch 12_register
-
-```
-git branch 12_register         # Membuat branch baru
-git checkout 12_register       # Berpindah ke branch tersebut
-# (lakukan perubahan pada file sesuai kebutuhan)
-git add .                       # Menambahkan semua perubahan ke staging area
-git commit -m "finish"          # Commit dengan pesan "finish"
-git push -u origin 12_register # Push ke remote dan set tracking branch
-```
 
 1. DEFINISI
 

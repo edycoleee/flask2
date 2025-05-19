@@ -1,0 +1,62 @@
+#docs/siswa_update.yml
+tags:
+  - Siswa
+summary: Perbarui data siswa berdasarkan ID
+description: Endpoint untuk memperbarui nama dan alamat siswa berdasarkan ID.
+parameters:
+  - name: siswa_id
+    in: path
+    required: true
+    type: integer
+    description: ID siswa yang akan diperbarui
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - nama
+        - alamat
+      properties:
+        nama:
+          type: string
+          example: Budi Updated
+        alamat:
+          type: string
+          example: Surabaya
+responses:
+  200:
+    description: Siswa berhasil diperbarui
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Siswa berhasil diperbarui
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nama:
+              type: string
+              example: Budi Updated
+            alamat:
+              type: string
+              example: Surabaya
+  400:
+    description: Field wajib tidak diisi
+    examples:
+      application/json:
+        error: Field 'nama' dan 'alamat' wajib diisi
+  404:
+    description: Siswa tidak ditemukan
+    examples:
+      application/json:
+        error: Siswa tidak ditemukan
+  500:
+    description: Gagal memperbarui siswa
+    examples:
+      application/json:
+        error: Gagal memperbarui siswa

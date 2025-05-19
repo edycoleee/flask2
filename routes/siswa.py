@@ -78,3 +78,32 @@ def delete_siswa(siswa_id):
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": "Gagal menghapus siswa"}), 500
+    
+#- UPDATE ID
+@siswa_bp.route('/siswa/<int:siswa_id>', methods=['PUT'])
+@swag_from('../docs/siswa_update.yml')
+def update_siswa(siswa_id):
+    try:
+        data = request.get_json()
+
+        # Validasi input
+        if not data or 'nama' not in data or 'alamat' not in data:
+            return jsonify({"error": "Field 'nama' dan 'alamat' wajib diisi"}), 400
+
+        updated = siswa_service.update_siswa(siswa_id, data['nama'], data['alamat'])
+
+        if updated == 0:
+            return jsonify({"error": "Siswa dengan ID tersebut tidak ditemukan"}), 404
+
+        return jsonify({
+            "message": "Siswa berhasil diperbarui",
+            "data": {
+                "id": siswa_id,
+                "nama": data['nama'],
+                "alamat": data['alamat']
+            }
+        }), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "Gagal memperbarui siswa"}), 500

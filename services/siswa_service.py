@@ -42,3 +42,15 @@ def delete_siswa(siswa_id):
     deleted = cursor.rowcount
     conn.close()
     return deleted  # 1 jika berhasil dihapus, 0 jika tidak ditemukan
+
+def update_siswa(siswa_id, nama, alamat):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE tb_siswa SET nama = ?, alamat = ? WHERE id = ?",
+        (nama, alamat, siswa_id)
+    )
+    conn.commit()
+    updated = cursor.rowcount  # Mengecek apakah baris ter-update
+    conn.close()
+    return updated  # 0 jika tidak ada yang diupdate, 1 jika berhasil

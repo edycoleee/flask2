@@ -1297,13 +1297,13 @@ SQL QUERY
 2. DOKUMENTASI
 
 ```yml
----
+#docs/siswa_update.yml
 tags:
   - Siswa
 summary: Perbarui data siswa berdasarkan ID
 description: Endpoint untuk memperbarui nama dan alamat siswa berdasarkan ID.
 parameters:
-  - name: id
+  - name: siswa_id
     in: path
     required: true
     type: integer

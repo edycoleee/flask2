@@ -89,3 +89,17 @@ def test_delete_siswa(client):
     response_2 = client.delete(f'/siswa/{siswa_id}')
     assert response_2.status_code == 404
     assert response_2.get_json()['error'] == "Siswa dengan ID tersebut tidak ditemukan"
+
+def test_update_siswa(client):
+    # Tambah siswa dulu agar bisa diupdate
+    create_response = client.post('/siswa', json={"nama": "Ani", "alamat": "Solo"})
+    siswa_id = create_response.get_json()['data']['id']
+
+    # Update siswa
+    response = client.put(f'/siswa/{siswa_id}', json={"nama": "Ani Updated", "alamat": "Semarang"})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert json_data['message'] == "Siswa berhasil diperbarui"
+    assert json_data['data']['id'] == siswa_id
+    assert json_data['data']['nama'] == "Ani Updated"
+    assert json_data['data']['alamat'] == "Semarang"

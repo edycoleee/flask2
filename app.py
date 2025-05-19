@@ -24,6 +24,14 @@ def init_db():
                 alamat TEXT NOT NULL
             )
         ''')
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS tb_user (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                token TEXT
+            )
+        ''')
 
 init_db()
 
@@ -32,7 +40,9 @@ init_db()
 from routes.belajar import belajar_bp  # perbaikan import
 # Register Blueprint >> siswa
 from routes.siswa import siswa_bp
+from routes.auth import auth_bp
 
+app.register_blueprint(auth_bp)
 app.register_blueprint(siswa_bp)
 app.register_blueprint(belajar_bp)
 

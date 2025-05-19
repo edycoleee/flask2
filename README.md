@@ -1484,7 +1484,13 @@ conn.execute('''
 
 API SPESIFIKASI
 
+| No  | Method | URL       | Request JSON                                     | Response JSON (Berhasil)                          | Response JSON (Gagal)                                             |
+| --- | ------ | --------- | ------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | POST   | /register | `{ "username": "user1", "password": "pass123" }` | `{ "message": "Registrasi berhasil" }`            | `409 Conflict`: `{ "error": "Username sudah digunakan" }`         |
+
 SQL QUERY
+
+conn.execute("INSERT INTO tb_user (username, password) VALUES (?, ?)", (username, password))
 
 2. DOKUMENTASI
 
@@ -1576,6 +1582,7 @@ def register():
         return jsonify({"message": "Registrasi berhasil"}), 201
     except sqlite3.IntegrityError:
         return jsonify({"error": "Username sudah digunakan"}), 409
+
 #2. Register Blueprint di app.py
 from routes.auth import auth_bp
 app.register_blueprint(auth_bp)
@@ -1663,7 +1670,13 @@ git push -u origin 13_login # Push ke remote dan set tracking branch
 
 API SPESIFIKASI
 
+| No  | Method | URL       | Request JSON                                     | Response JSON (Berhasil)                          | Response JSON (Gagal)                                             |
+| --- | ------ | --------- | ------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------- |
+| 2   | POST   | /login    | `{ "username": "user1", "password": "pass123" }` | `{ "message": "Login berhasil", "token": "..." }` | `401 Unauthorized`: `{ "error": "Username atau password salah" }` |
+
 SQL QUERY
+
+user = conn.execute("SELECT * FROM tb_user WHERE username = ? AND password = ?", (username, password)).fetchone()
 
 2. DOKUMENTASI
 
@@ -1804,7 +1817,13 @@ git push -u origin 14_logout # Push ke remote dan set tracking branch
 
 API SPESIFIKASI
 
+| No  | Method | URL       | Request JSON                                     | Response JSON (Berhasil)                          | Response JSON (Gagal)                                             |
+| --- | ------ | --------- | ------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------- |
+| 3   | POST   | /logout   | (Header: `Authorization: Bearer <token>`)        | `{ "message": "Logout berhasil" }`                | `401 Unauthorized`: `{ "error": "Token tidak valid" }`            |
+
 SQL QUERY
+
+cur = conn.execute("UPDATE tb_user SET token = NULL WHERE token = ?", (token,))
 
 2. DOKUMENTASI
 
